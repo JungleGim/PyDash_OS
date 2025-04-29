@@ -1,0 +1,17 @@
+#
+#service runs on startup and displays an image to the 
+#  framebuffer as a "splash screen" image
+#
+[Unit]
+Description=Display splash image to framebuffer on startup
+DefaultDependencies=no
+After=local-fs.target
+
+[Service]
+Type=simple
+#old text from fbset as an example
+#ExecStart=-/sbin/fbset -fb /dev/fb0 -g 800 480 800 480 32
+ExecStart= fbv /root/pydash_logo.png
+
+[Install]
+WantedBy=sysinit.target
