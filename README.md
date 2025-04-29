@@ -43,7 +43,7 @@ While the PyDash_OS is configurable for any hardware (depending on the buildroot
 	- [link for display](https://www.waveshare.com/product/raspberry-pi/displays/lcd-oled/70h-1024600.htm?sku=22676)
 
 # Methodology
-##Key Considerations and Constraints
+## Key Considerations and Constraints
 Several considerations or constrains were in place when building this OS. Many of these center around the intended implementation of using this as an automative display / dashboard.
 
 - fast-booting
