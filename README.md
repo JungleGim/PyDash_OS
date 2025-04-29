@@ -70,13 +70,13 @@ The below contains notes/information on the various kernel configuration options
 # Creating PyDash_OS
 For the base configuration of the OS, I'd recommend following one of any tutorials on compiling an image for the Raspberry Pi. This will ensure that for the chosen hardware, everything is working correctly and compiles as intended. The following sections detail some of the PyDash SPECIFIC updates/changes.
 
-# Buildroot Configuration
+## Buildroot Configuration
 Buildroot must first be installed locally on the machine that will compile the OS. This readme does not cover that process, recommend following any of the available guides to install/localize buildroot.
 
 TODO: Discuss configuration/handling of the post-build scripts
 TODO: Discuss configuration/handling of the rootFS overlay
 
-## Kernel Configuration
+### Kernel Configuration
 Many options are required to be configured to set up the PyDash_OS. Not all of the required changes from base are detailed here, however the complete configuration is contained in the `.config` file in the buildroot external folder directory
 
 - Use “raspberrypicm4io_64_defonfig” as a starting point
@@ -123,12 +123,12 @@ Many options are required to be configured to set up the PyDash_OS. Not all of t
 		- iproute2
 			- needed for CANbus
 
-## User Patches
+### User Patches
 Any applied user patches are specific to options required to modify or update the packages pulled during compilation. There are no current applied user patches for PhyDashOS
 
 There ARE however some patches applied to phython3 in order for it to work sufficiently with Tkinter. These have been submitted to the buildroot hive mind for approval but may change in future python revisions. Please review the files under the `packages_python3_chagnes` directory for the associated updates.
 
-## Post Build Scripts
+### Post Build Scripts
 Post-build scripts are scripts used to modify the target filesystem after its generation. See the `pydash_postbuild_script.sh` file for the full list. REMINDER: this must be configured in buildroot as well.
 
 A summary of the modifications in the post build script are listed below:
@@ -139,7 +139,7 @@ A summary of the modifications in the post build script are listed below:
 - Update root OS files related to Xorg to launch PyDash app on startup
 - Update system.conf to shorten stop/timeout limits
 
-# Root FS Overlays
+## Root FS Overlays
 Using the root FS overlay allows buildroot to place files into the root filesystem it generates as an image during compilation.
 
 Users need to configure an external directory that will be populated with the root FS overlay files. Within buildroot, If a relative path is given, it will correspond to the buildroot base directory. For example, if buildroot is in `/home/user/desktop/buildroot-2023.11/` and the given relative path is `/my_boards/rpi/cm4/cm4_rootFS_ovrly/` then anything in the folder `home/user/desktop/buildroot-2023.11/my_boards/rpi/cm4/cm4_rootFS_ovrly/` will be applied to the root files and folder structure during compilation of the image.
@@ -155,7 +155,7 @@ After loading the associated configuration file and/or configuring buildroot wit
 After performing the `make all` or `make clean all` command, Buildroot will compile the OS. When complete, the system image is located at  `/<buildroot dir>/output/images/sdcard.img`. This image can then be flashed to the Pi device using any of the typical means. Typically, for most people, this will be the "Raspberry Pi Imager" software available for download on their site.
 
 # Dependent Packages
-Open-source projects that the developers independently modify or expand should be contained in a section on “desired collaboration” in the readme.md file. How should problems be handled? How should developers advance the changes?
+TBD: Include dependent packages
 
 # Known bugs and bug fixes
 No current known bugs
