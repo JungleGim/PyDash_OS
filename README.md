@@ -99,6 +99,7 @@ Many options are required to be configured to set up the PyDash_OS. Not all of t
 		- Python-can
 		- Python-pillow
 		- Python-spidev
+   		- Python-rpi-gpio
 	- Graphical Interface
 		- X.org X window system
 			- X11R7 servers should be "modular X.org"
