@@ -15,10 +15,13 @@ Additional details on the design considerations, required packages, and key feat
 
 # Project Status
 ## Revlog
-- Rev20240516
-  - Rev0 release based on internal testing and development
-- Rev20240605
+- Rev0 - 5/16/2025
+	- Initial release based on internal testing and development
+- Rev0a - 6/5/2024
 	- Updated PyDash_App in root FS overlay
+	- Initial functional release
+- Rev1a - 5/19/2025
+	- added python-rpi-gpio package for button interface
 
 ## Future Development
 - Review/cleanup un-needed drivers to help speed up boot. Usings systemd-analyze blame to identify contributors and reduce/remove where able
