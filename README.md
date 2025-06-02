@@ -24,7 +24,7 @@ Additional details on the design considerations, required packages, and key feat
 	- added python-rpi-gpio package for button interface
 
 ## Future Development
-### Critical items for future revisions
+### Critical items for immediate development
 - Implement writeable partition
 	- currently is "Read only" to help with the constant power cycling nature of an automotive dash.
  	- add a writeable partition for user files, a configuration XML, log files, etc.
