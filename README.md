@@ -4,7 +4,7 @@ PyDash_PCB
 PyDash_App
 
 ## Introduction
-PyDash_OS is a Linux kernel based OS used to provide an environment for the "PyDash" program. Key features of PyDash_OS in order of importance include:
+PyDash_OS is a Linux kernel based OS used to provide an environment for the "PyDash" program. Key features of PyDash_OS for maintainence and future development (in order of importance) include:
 - fast-booting
 - graphical interface
 - supports python
@@ -24,15 +24,25 @@ Additional details on the design considerations, required packages, and key feat
 	- added python-rpi-gpio package for button interface
 
 ## Future Development
+### Immediate Dev for future revs
+- Implement writeable partition
+	- currently is "Read only" to help with the constant power cycling nature of an automotive dash.
+ 	- add a writeable partition for user files, a configuration XML, log files, etc.
+- USB device support
+- Implement secure boot
+
+### Additional future dev
+- Add a graphical splash screen to hide the typical pi bootup garble. This is a "fit and finish" item and is not critical to operation of the display.
+	- already had an attempt using the framebuffer startup service and it...kind of worked. It did display but wouldn't effectively hide all the garble. Also, the overall impact to startup time wasn't something i wanted to add to the mess. With refinement it should work but just haven't gotten there yet.
 - Review/cleanup un-needed drivers to help speed up boot. Usings systemd-analyze blame to identify contributors and reduce/remove where able
   - Looking at the list, "systemd-udev-trigger.service" seems to be the top offender at just over 800ms. Looking around at other distros, this doesn't seem to take that long (usually sub 100ms).
 	- Purpose of this is to trigger different devices on startup. The OS doesn't use a whole lot on startup. How much could be deferred to later and handled in post-boot?
 	- [Information 1](https://github.com/systemd/systemd/issues/17264) and [Information 2](https://github.com/profusion/demystifying-systemd-for-embedded-systems/blob/b1c10727729d888c6429b90e181c2f26d55e9354/systemd-minimal-strip.sh#L143)
-- Implement secure boot
-- Currently is "Read only" to help with the constant power cycling nature of an automotive dash. Look at adding a writeable partition for user files, a configuration XML, log files, etc.
-- Organize my buildroot environment better. Match closer to the "approved" file structure for configuration files, etc.
-- Add a graphical splash screen to hide the typical pi bootup garble. This is a "fit and finish" item and is not critical to operation of the display.
-	- already had an attempt using the framebuffer startup service and it...kind of worked. It did display but wouldn't effectively hide all the garble. Also, the overall impact to startup time wasn't something i wanted to add to the mess. With refinement it should work but just haven't gotten there yet.
+- Organize buildroot environment better. Match closer to the "approved" file structure for configuration files, etc.
+- Better/wider range of font support.
+	- One noted current issue is that using a tab-space displays a "NL" char instead of inserting a tab
+- Look into additional app support
+	- One popular use would be a program called "tuner studio". This is typically used already for making custom dashes.
 
 # Requirements
 ## Build Environment
@@ -51,11 +61,13 @@ Several considerations or constrains were in place when building this OS. Many o
 
 - fast-booting
 	- must be fast booting to display gauge information as soon as possible.
-	- understood that a nearly "instant" display is not possible with the chosen hardware configuration. However, for my application any of the "start up" time for the display will be absorbed by letting the car warm up, buckling in, putting on safety equipment like helmet and gloves, etc.
+	- understood that a nearly "instant" display is not possible with the chosen hardware configuration. However, for an aftermarket "race car" application any of the "start up" time for the display will be absorbed by letting the car warm up, buckling in, putting on safety equipment like helmet and gloves, etc.
+	- optimizing start time should still take priority to enhance user experience
 - graphical interface
-	- There should be a means for using a graphical interface to display information. The end goal is to have a display server that is available to users for running scripts or displaying whatever kind of information they desire.
-	- Ultimately this is handled by a python app in PyDash_App
-	- Feasibly, with some extra configuration to the OS, support for other apps like tuner studio could also be implemented for a wider range of use.
+	- A graphical interface to display information is REQUIRED. The end goal is to have a display server that is available to users for running scripts or displaying whatever kind of information they desire.
+		- Currently, X11 is used as the display server. Other options like wayland may require additional configuration changes
+	- Ultimately, the data display and configuration is handled by a python app (PyDash_App)
+	- Feasibly, with some extra configuration to the OS, support for other apps like tuner studio could also be implemented for a wider range of use and user preference/customization
 - supports python
 	- the chosen hardware of a CM4 revolves around the Raspberry Pi environment. This is widely supported and while other programming options exist, it is largely used by the community at large through python.
 	- For ease of integration with other community knowledge, python is used as the chosen language of the actual dash program. For this reason, the OS must support python.
@@ -64,7 +76,7 @@ Several considerations or constrains were in place when building this OS. Many o
 	- Many options to combat this both in hardware and software were examined; strategies like on-board batteries and supercapacitors were considered.
 	- however, the most simple and repeatable implementation to combat any corruption concerns was simply to make the OS and anything installed on the CM4 "read only". This poses some additional challenges but ensures that any un-planned power-off events will not corrupt the program or the OS.
 - lightweight
-	- While the CM4 comes in very configurations, some of which are very capable, this is still an rPi. Ensuring that the overall OS and supporting packages are only installed if needed promotes a lightweight installation.
+	- While the CM4 comes in various configurations, some of which are highly capable, this is still an rPi. Ensuring that the overall OS and supporting packages are only installed if needed promotes a lightweight installation.
 	- Additionally, this ensures that less total power and overhead computations are used (for potentially un-necessary apps) so that the overall available resources are maximized and heat generated is minimized.
 
 ## Kernel Config Options
@@ -76,11 +88,10 @@ For the base configuration of the OS, I'd recommend following one of any tutoria
 ## Buildroot Configuration
 Buildroot must first be installed locally on the machine that will compile the OS. This readme does not cover that process, recommend following any of the available guides to install/localize buildroot.
 
-TODO: Discuss configuration/handling of the post-build scripts
-TODO: Discuss configuration/handling of the rootFS overlay
+The current buildroot version used to compile is 2024.02-573.
 
 ### Kernel Configuration
-Many options are required to be configured to set up the PyDash_OS. Not all of the required changes from base are detailed here, however the complete configuration is contained in the `.config` file in the buildroot external folder directory
+Many options are required to be configured to set up the PyDash_OS. The complete configuration is contained in the `.config` file in the buildroot external folder GIT directory. A summary of the key configurations is given here. Loading the contained config should set up the appropriate parameters to successfully compile and function.
 
 - Use “raspberrypicm4io_64_defonfig” as a starting point
 - system configuration
@@ -130,7 +141,7 @@ Many options are required to be configured to set up the PyDash_OS. Not all of t
 ### User Patches
 Any applied user patches are specific to options required to modify or update the packages pulled during compilation. There are no current applied user patches for PhyDashOS
 
-There ARE however some patches applied to phython3 in order for it to work sufficiently with Tkinter. These have been submitted to the buildroot hive mind for approval but may change in future python revisions. Please review the files under the `packages_python3_chagnes` directory for the associated updates.
+There ARE however some patches applied to phython3 in order for it to work sufficiently with Tkinter. These have been submitted to the buildroot hive mind for approval but may change in future python revisions. Please review the files under the `packages_python3_chagnes` directory for the associated updates required to the python package for inclusion of tkiner.
 
 ### Post Build Scripts
 Post-build scripts are scripts used to modify the target filesystem after its generation. See the `pydash_postbuild_script.sh` file for the full list. REMINDER: this must be configured in buildroot as well.
@@ -158,9 +169,6 @@ After loading the associated configuration file and/or configuring buildroot wit
 ## Installing
 After performing the `make all` or `make clean all` command, Buildroot will compile the OS. When complete, the system image is located at  `/<buildroot dir>/output/images/sdcard.img`. This image can then be flashed to the Pi device using any of the typical means. Typically, for most people, this will be the "Raspberry Pi Imager" software available for download on their site.
 
-# Dependent Packages
-TBD: Include dependent packages
-
 # Known bugs and bug fixes
 No current known bugs
 
@@ -168,12 +176,14 @@ No current known bugs
 No current FAQ
 
 # Copyright and licensing information
-TBD this section is a work in progress to list the correct, legal licensure information. However, as a generic dislaimer;
+All of the end products of Buildroot (toolchain, root filesystem, kernel,bootloaders) contain open source software, released under various licenses. Using open source software gives you the freedom to build rich embedded systems, choosing from a wide range of packages, but also imposes some obligations that you must know and honour. Some licenses require you to publish the license text in the documentation of your product. Others require you to redistribute the source code of the software to those that receive your product. The exact requirements of each license are documented in each package, and it is your responsibility (or that of your legal office) to comply with those requirements.
+
+The output of the buildroot "make legal-info" output is contained in the "legal-info" GIT directory and contains relevant licensing information for the current configuration.
  
-The information included is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software or tools included in this repository.
+The information included in this repository is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software or tools included in this repository.
 
 # General Notes
-While I am an engineer by trade, my area of focus is not computer architecture or system engineering. Likely some people have already looked at various aspects of the codebase and just shook their heads. That being said, I've compiled a list of considerations and notes for the project that have helped me along the way. These are listed below, in no particular order.
+While I am an engineer by trade, my area of focus is not computer architecture or system engineering. Likely some people have already looked at various aspects of the codebase and just shook their heads. This has largely been a self-taught endeavor and I'm constantly improving; The compiled list of considerations and notes for the project that have helped me along the way, as i hope they may also help others. These are listed below, in no particular order.
 
 ## Buildroot Notes
 - To reset buildroot for a new target use the “$ make distclean” command
