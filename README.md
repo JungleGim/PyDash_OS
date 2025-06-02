@@ -1,7 +1,8 @@
 # PyDash_OS - Information
 This readme covers the operating system or "OS" portion of the PyDash. For the PCB design and python application design, see the below repositories
-PyDash_PCB
-PyDash_App
+- PyDash_PCB
+- [PyDash_App](https://github.com/JungleGim/PyDash_App)
+- PyDash_Enclosure
 
 ## Introduction
 PyDash_OS is a Linux kernel based OS used to provide an environment for the "PyDash" program. Key features of PyDash_OS for maintainence and future development (in order of importance) include:
