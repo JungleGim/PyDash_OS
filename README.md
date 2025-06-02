@@ -24,14 +24,14 @@ Additional details on the design considerations, required packages, and key feat
 	- added python-rpi-gpio package for button interface
 
 ## Future Development
-### Immediate Dev for future revs
+### Critical items for future revisions
 - Implement writeable partition
 	- currently is "Read only" to help with the constant power cycling nature of an automotive dash.
  	- add a writeable partition for user files, a configuration XML, log files, etc.
 - USB device support
 - Implement secure boot
 
-### Additional future dev
+### Additional future development
 - Add a graphical splash screen to hide the typical pi bootup garble. This is a "fit and finish" item and is not critical to operation of the display.
 	- already had an attempt using the framebuffer startup service and it...kind of worked. It did display but wouldn't effectively hide all the garble. Also, the overall impact to startup time wasn't something i wanted to add to the mess. With refinement it should work but just haven't gotten there yet.
 - Review/cleanup un-needed drivers to help speed up boot. Usings systemd-analyze blame to identify contributors and reduce/remove where able
