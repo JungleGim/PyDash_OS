@@ -64,6 +64,7 @@ Several considerations or constrains were in place when building this OS. Many o
 	- must be fast booting to display gauge information as soon as possible.
 	- understood that a nearly "instant" display is not possible with the chosen hardware configuration. However, for an aftermarket "race car" application any of the "start up" time for the display will be absorbed by letting the car warm up, buckling in, putting on safety equipment like helmet and gloves, etc.
 	- optimizing start time should still take priority to enhance user experience
+	- current boot time is approximately 25s
 - graphical interface
 	- A graphical interface to display information is REQUIRED. The end goal is to have a display server that is available to users for running scripts or displaying whatever kind of information they desire.
 		- Currently, X11 is used as the display server. Other options like wayland may require additional configuration changes
