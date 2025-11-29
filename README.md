@@ -23,6 +23,12 @@ Additional details on the design considerations, required packages, and key feat
 	- Initial functional release
 - Rev1a - 5/19/2025
 	- added python-rpi-gpio package for button interface
+- Rev2a - 10/12/2025: WIP - not yet uploaded
+  	- (finishing local testing before final upload)
+  	- Added overlay for SDIO interface to mount/use SD cards
+  	- Updated FStab for auto-mounting of any inserted SD card at specified location
+  	- Added Fontconfig package to allow for new system fonts
+  	- Added new PyDash specific root overlay for common files - including system fonts
 
 ## Future Development
 ### Critical items for immediate development
