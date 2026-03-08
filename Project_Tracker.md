@@ -185,4 +185,10 @@ This section doesn't necesarily include final changes but was more of a running 
 
 # Future Updates
 Include any items below in the appropriate README.md file section
-(none)
+* Someday goal of supporting tunerstudio dash (TS Dash)
+	- Right now, PyDash is basically locked into just using the same-named app.
+	- Realistically though, the OS is just a linux kernel and so running TS dash shouldn't be an issue. Many raspberry pis already use this program already anyway.
+	- Opening up to TS Dash would "unburden" the need for the PyDash builder, and app. Also it would open the dash to a much wider audience and probably would be good for it.
+	- Could probably achieve this by using a separate build that launches TS dash on startup and then use a same/similar folder structure in the uSD card for TS to look for the config file at startup.
+		+ unsure how navigating menus and pages would work with this but it has the pi GPIO integrated and I can't be the first person do do this.
+		+ also unsure if TS dash will allow for configuring log paths, but that seems to be a pretty easy request and I'd expect it to be included natively.
