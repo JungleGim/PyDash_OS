@@ -33,25 +33,24 @@ Additional details on the design considerations, required packages, and key feat
   	- Added new PyDash specific root overlay for common files - including system fonts
 
 ## Future Development
-### Critical items for immediate development
-- Implement writeable partition
-	- currently is "Read only" to help with the constant power cycling nature of an automotive dash.
- 	- add a writeable partition for user files, a configuration XML, log files, etc.
-- USB device support
-- Implement secure boot
 
 ### Additional future development
-- Add a graphical splash screen to hide the typical pi bootup garble. This is a "fit and finish" item and is not critical to operation of the display.
-	- already had an attempt using the framebuffer startup service and it...kind of worked. It did display but wouldn't effectively hide all the garble. Also, the overall impact to startup time wasn't something i wanted to add to the mess. With refinement it should work but just haven't gotten there yet.
-- Review/cleanup un-needed drivers to help speed up boot. Usings systemd-analyze blame to identify contributors and reduce/remove where able
+- Feature request: Implement secure boot
+- Feature request: Add a graphical splash screen to hide the typical pi bootup garble. This is a "fit and finish" item and is not critical to operation of the display.
+	- already had an attempt manually setting up the framebuffer startup service and it...kind of worked. It did display but wouldn't effectively hide all the garble. Also, the overall impact to startup time wasn't something i wanted to add to the mess. With refinement it should work but just haven't gotten there yet.
+	- psplash has a package in buildroot that may solve the issue. Look into if it might work. psplash uses the framebuffer so it displays early.
+- Performance Improvement: Review/cleanup un-needed drivers to help speed up boot. Usings systemd-analyze blame to identify contributors and reduce/remove where able
   - Looking at the list, "systemd-udev-trigger.service" seems to be the top offender at just over 800ms. Looking around at other distros, this doesn't seem to take that long (usually sub 100ms).
 	- Purpose of this is to trigger different devices on startup. The OS doesn't use a whole lot on startup. How much could be deferred to later and handled in post-boot?
 	- [Information 1](https://github.com/systemd/systemd/issues/17264) and [Information 2](https://github.com/profusion/demystifying-systemd-for-embedded-systems/blob/b1c10727729d888c6429b90e181c2f26d55e9354/systemd-minimal-strip.sh#L143)
-- Organize buildroot environment better. Match closer to the "approved" file structure for configuration files, etc.
-- Better/wider range of font support.
-	- One noted current issue is that using a tab-space displays a "NL" char instead of inserting a tab
-- Look into additional app support
-	- One popular use would be a program called "tuner studio". This is typically used already for making custom dashes.
+- Documentation: Organize buildroot environment better. Match closer to the "approved" file structure for configuration files, etc.
+- Feature request: Someday goal of supporting tunerstudio dash (TS Dash)
+	- Right now, PyDash is basically locked into just using the same-named app.
+	- Realistically though, the OS is just a linux kernel and so running TS dash shouldn't be an issue. Many raspberry pis already use this program already anyway.
+	- Opening up to TS Dash would "unburden" the need for the PyDash builder, and app. Also it would open the dash to a much wider audience and probably would be good for it.
+	- Could probably achieve this by using a separate build that launches TS dash on startup and then use a same/similar folder structure in the uSD card for TS to look for the config file at startup.
+		+ unsure how navigating menus and pages would work with this but it has the pi GPIO integrated and I can't be the first person do do this.
+		+ also unsure if TS dash will allow for configuring log paths, but that seems to be a pretty easy request and I'd expect it to be included natively.
 
 # Requirements
 ## Build Environment
@@ -115,6 +114,9 @@ Many options are required to be configured to set up the PyDash_OS. The complete
 - Packages
 	- Hardware handling
 		- pigpio
+		- firmware
+			- brcmfmac-sdio-firmware-rpi
+				- needed for SDIO
 	- firmware
 		- update path to the custom config.txt used
 		- update path to the custom cmdline.txt used
@@ -139,11 +141,15 @@ Many options are required to be configured to set up the PyDash_OS. The complete
 		- Xterm
 	- Fonts
 		- Liberation
+		- verify freetype installed (should be via other packages)
+		- verify Fontconfig installed (should be via other packages)
 	- System Tools
 		- Systemd
 			- Systemd-analyze
 			- network manager
 				- needed for CANbus
+		- util-linux
+			- basic tools including lsblk, lhshw, etc. For troubleshooting
 	- Networking
 		- iproute2
 			- needed for CANbus
@@ -171,7 +177,16 @@ Users need to configure an external directory that will be populated with the ro
 
 If a folder in the external FS overlay directory exists in the base OS image, any included files and/or folders will be merged. For example, if the “root FS overlay” folder contains a “root” folder, then those files/directories will be placed into the “root” directory of the OS.
 
-Currently, the PyDash_app and requisite files is contained in an overlay folder `/root/pydash`
+- PyDash app - folder `/PyDash`
+	+ Note that there are currently files in this folder that match the current approved version. However, the latest version can be found at the PyDash-App link at the top of this readme
+- Font config  - folder `/usr/share/fonts/custom`
+	+ included a local.conf for fontconfig
+	+ updated path to point to included fonts folder
+- Fonts - folder `/PyDash/Fonts`
+	+ included folder with requisite fonts. Note that this folder containst he current fonts for this release.
+	+ should users manually add fonts to their PyDash-Builder project, additional fonts witht he appropriate format should be included here before compiling new OS
+- Fstab
+	+ updated fstab file to handle micro SD card mounting
 
 ## Compiling
 After loading the associated configuration file and/or configuring buildroot with the desired options, running a `make clean all` command will start the process of compiling the OS.
@@ -248,3 +263,8 @@ Throughout the project, I have used many references, related to various aspects/
 - [Applying patches in Buildroot](https://stackoverflow.com/questions/6382986/how-to-apply-patches-to-a-package-in-buildroot?rq=1)
 - [Systemd Target Levels](https://opensource.com/article/20/5/systemd-startup)
 - [Linux Command Line Connecting to WiFi](https://www.baeldung.com/linux/connect-network-cli)
+-	[uSD card](https://forums.raspberrypi.com/viewtopic.php?t=392261)
+-	[uSD card](https://wiki.archlinux.org/title/Fstab)
+-	[uSD card](https://unix.stackexchange.com/a/800185/601305)
+-	[uSD card](https://www.freedesktop.org/software/systemd/man/latest/systemd.mount.html)
+

@@ -4,6 +4,10 @@ responsibility to comply to the requirements of these licenses.
 To make this easier for you, Buildroot collected in this directory some
 material you may need to get it done.
 
+The information in this file contains a summary of the included packages. Additionally
+loading the config in buildroot and running "make legal-info" will produce the same
+result, with the inclusion of the sources used to compile the OS.
+
 This material is composed of the following items.
  * The scripts used to control compilation of the packages and the generation
    of image files, i.e. the Buildroot sources.
@@ -15,12 +19,10 @@ This material is composed of the following items.
    Note: this may have not been saved due to technical limitations, you may
    need to collect it manually.
  * The original source code for target packages in the 'sources/'
-   subdirectory and for host packages in the 'host-sources/' subdirectory
-   (except for the non-redistributable packages, which have not been
-   saved). Patches that were applied are also saved, along with a file
-   named 'series' that lists the patches in the order they were
-   applied. Patches are under the same license as the files that they
-   modify in the original package.
+   subdirectory and for host packages in the 'host-sources/' has not been
+   included due to the size of the resulting file. These files can be
+   reproduced by running "make legal-info" after loading the buildroot
+   config.
    Note: Buildroot applies additional patches to Libtool scripts of
    autotools-based packages. These patches can be found under
    support/libtool in the Buildroot source and, due to technical

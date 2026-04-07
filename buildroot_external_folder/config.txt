@@ -1,0 +1,57 @@
+# Customized config file for pydash
+# rev2a testing
+
+start_file=start4.elf
+fixup_file=fixup4.dat
+
+kernel=Image
+
+# Disable overscan assuming the display supports displaying the full resolution
+# If the text shown on the screen disappears off the edge, comment this out
+disable_overscan=1
+
+#disable rainbow splash
+disable_splash=1
+
+# Framebuffer sizing for more basic displays. This is commented out for the current display
+#max_framebuffer_height=480
+#max_framebuffer_width=848
+#framebuffer_height=480
+#framebuffer_width=848
+#framebuffer_depth=32
+
+#wavesahre display sizing
+hdmi_drive=1
+hdmi_group=2
+hdmi_mode=87
+hdmi_cvt=1024 600 60 6 0 0 0
+
+# How much memory in MB to assign to the GPU on Pi models having
+# 256, 512 or 1024 MB total memory
+gpu_mem_256=100
+gpu_mem_512=100
+gpu_mem_1024=100
+
+# fixes rpi (3B, 3B+, 3A+, 4B and Zero W) ttyAMA0 serial console
+dtoverlay=miniuart-bt
+
+# enable RTC
+dtparam=i2c_vc=on
+dtoverlay=i2c-rtc,pcf85063a,i2c_csi_dsi
+
+# enable dwc2 USB controller (USB 2.0)
+dtoverlay=dwc2,dr_mode=host
+
+# enable 64bits support
+arm_64bit=1
+
+#enable SPI
+dtparam=spi=on
+
+#enable CANbus overlay
+dtoverlay=mcp2515-can0,oscillator=16000000,interrupt=12
+
+#enable SDIO for uSD
+#4 bit mode, poll every second, 25MHz clock
+dtoverlay=sdio,poll_once=off,sdio_overclock=25
+

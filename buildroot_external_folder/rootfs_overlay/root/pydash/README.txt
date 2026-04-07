@@ -1,1 +1,0 @@
-This file should be replaced with whatever local scripts/programs/app/etc the user wishes to run. In the case of a vanilla PyDash configuration, this is normally the PyDAsh_App python file and its supporting files.

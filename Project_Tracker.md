@@ -41,6 +41,11 @@ Build Date: N/A
 * cm4_pydash_r2a_20251005
 	- compiled using buildroot ver 2025.11 on new VM
 	- tested OK with SD card and tkinter – basic testing on bench, not full testing. Still a good version to settling into 2.0a testing for the other parts of the project
+* cm4_pydash_r2a_20260405
+	- tested working with rev2.0a pre-release PyDash-App and dev board
+	- OK'd for progression to final release
+* cm4_pydash_r1c_20260405
+	- rev2.0a PyDash-App setup for use on Rev1 firmware
 
 # TODO
 ## WIP Version TODO list
@@ -54,12 +59,6 @@ any changes required for the ongoing development and pushing towards the final v
 		+ Make sure the fsstab works for all sorts of different types and sizes of uSD cards.
 		+ Ultimately need to test/replicate what it might be like for users to try a bunch of different SD cards. Need to figure out what does and doesn't work for a future user guide
 		+ Also then, try it with the “test program” with different files in it and just make sure the program can see everything appropriately.
-
-* Test with existing HW
-	- use the new OS with existing dash hardware as a test
-	- current version passes bench-test on CM4IO board and benchtop configuration
-		+ Need to test using the other various options typical to the final pydash OS like a fully hooked up CANbus, etc.
-	- Test final “next revision” of pydash program and make sure it loads/works with the new setup
 * Test with new Rev 2.0 package
 	- after testing with eixsting hardware and before signing off final ver 2.0, test with all rev2 components (PCB, enclosure, app, etc.)
 
@@ -153,7 +152,7 @@ This section contains the various changes needed to implement custom fonts
 * verified freetype installed
 * verified Fontconfig installed
 * Added a fonts folder in the root FS overlay
-	- Made (/root/fonts)
+	- Made (/PyDash/fonts)
 	- This will be the spot that fontconfig points to for the pydash fonts
 * added fontconfig configuraiton file to the FS overlay
 	- google says use a file at (<rootfs-overlay>/etc/fonts/local.conf)
