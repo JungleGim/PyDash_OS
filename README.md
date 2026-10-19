@@ -39,34 +39,11 @@ Additional details on the design considerations, required packages, and key feat
     - Changed post-build script and config to match new release
     - need to correct some issues discovered with testing
 
-## Future Development
-
-### Additional future development
-- Feature request: Implement secure boot
-- Feature request: Add a graphical splash screen to hide the typical pi bootup garble. This is a "fit and finish" item and is not critical to operation of the display.
-	- already had an attempt manually setting up the framebuffer startup service and it...kind of worked. It did display but wouldn't effectively hide all the garble. Also, the overall impact to startup time wasn't something i wanted to add to the mess. With refinement it should work but just haven't gotten there yet.
-	- psplash has a package in buildroot that may solve the issue. Look into if it might work. psplash uses the framebuffer so it displays early.
-- Feature Request: Writable FS overlay
-	- Add a writable FS overlay section for copying the config to and use as a "buffer" drive
-	- Currently the dash config operates completed off the uSD card. A writeable FS sector would be used to copy and read the dash configuration to
-	- The intended benefit would be that any config is stored on the OS so that the dash could function without the uSD inserted
-	- This also gives some backup/redundancy
-- Performance Improvement: Review/cleanup un-needed drivers to help speed up boot. Usings systemd-analyze blame to identify contributors and reduce/remove where able
-  - Looking at the list, "systemd-udev-trigger.service" seems to be the top offender at just over 800ms. Looking around at other distros, this doesn't seem to take that long (usually sub 100ms).
-	- Purpose of this is to trigger different devices on startup. The OS doesn't use a whole lot on startup. How much could be deferred to later and handled in post-boot?
-	- [Information 1](https://github.com/systemd/systemd/issues/17264) and [Information 2](https://github.com/profusion/demystifying-systemd-for-embedded-systems/blob/b1c10727729d888c6429b90e181c2f26d55e9354/systemd-minimal-strip.sh#L143)
-- Documentation: Organize buildroot environment better. Match closer to the "approved" file structure for configuration files, etc.
-- Feature request: Supporting tunerstudio dash (TS Dash)
-	- Right now, PyDash is basically locked into just using the same-named app.
-	- Realistically though, the OS is just a linux kernel and so running TS dash shouldn't be an issue. Many raspberry pis already use this program already anyway.
-	- Opening up to TS Dash would "unburden" the need for the PyDash builder, and app. Also it would open the dash to a much wider audience and probably would be good for it.
-	- Could probably achieve this by using a separate build that launches TS dash on startup and then use a same/similar folder structure in the uSD card for TS to look for the config file at startup.
-		+ unsure how navigating menus and pages would work with this but it has the pi GPIO integrated and I can't be the first person do do this.
-		+ also unsure if TS dash will allow for configuring log paths, but that seems to be a pretty easy request and I'd expect it to be included natively.
-
 # Requirements
 ## Build Environment
 PyDash_OS is developed using the "buildroot" environment. The information included in the Readme highlights some of the required packages and configuration options needed to compile the output image.
+
+Current version used to compile is Buildroot-2026.08
 
 ## Physical Hardware
 While the PyDash_OS is configurable for any hardware (depending on the buildroot options) there are some key pieces that either require additional changes or would require a re-design of the supporting PCB and/or application. The current hardware configuration consists of:
@@ -148,7 +125,7 @@ Many options are required to be configured to set up the PyDash_OS. The complete
 				- Xconsole
 				- Xdm
 			- X11R7 drivers
-				- input-eudev
+				- input-libinput
 				- video-fbdev
 		- Xterm
 	- Fonts
