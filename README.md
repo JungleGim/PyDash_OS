@@ -25,12 +25,19 @@ Additional details on the design considerations, required packages, and key feat
 	- Initial functional release
 - Rev1a - 5/19/2025
 	- added python-rpi-gpio package for button interface
-- Rev2a - 10/12/2025: WIP - not yet uploaded
+- Rev2a - 10/12/2025: WIP
   	- (finishing local testing before final upload)
   	- Added overlay for SDIO interface to mount/use SD cards
   	- Updated FStab for auto-mounting of any inserted SD card at specified location
   	- Added Fontconfig package to allow for new system fonts
   	- Added new PyDash specific root overlay for common files - including system fonts
+- Rev2a - 04/06/2026
+    - completed local testing
+    - all features work on CM4IO board
+- Rev2a - 10/19/2026
+    - Updated from Buildroot 2025.11 to 2026.08
+    - Changed post-build script and config to match new release
+    - need to correct some issues discovered with testing
 
 ## Future Development
 
@@ -39,12 +46,17 @@ Additional details on the design considerations, required packages, and key feat
 - Feature request: Add a graphical splash screen to hide the typical pi bootup garble. This is a "fit and finish" item and is not critical to operation of the display.
 	- already had an attempt manually setting up the framebuffer startup service and it...kind of worked. It did display but wouldn't effectively hide all the garble. Also, the overall impact to startup time wasn't something i wanted to add to the mess. With refinement it should work but just haven't gotten there yet.
 	- psplash has a package in buildroot that may solve the issue. Look into if it might work. psplash uses the framebuffer so it displays early.
+- Feature Request: Writable FS overlay
+	- Add a writable FS overlay section for copying the config to and use as a "buffer" drive
+	- Currently the dash config operates completed off the uSD card. A writeable FS sector would be used to copy and read the dash configuration to
+	- The intended benefit would be that any config is stored on the OS so that the dash could function without the uSD inserted
+	- This also gives some backup/redundancy
 - Performance Improvement: Review/cleanup un-needed drivers to help speed up boot. Usings systemd-analyze blame to identify contributors and reduce/remove where able
   - Looking at the list, "systemd-udev-trigger.service" seems to be the top offender at just over 800ms. Looking around at other distros, this doesn't seem to take that long (usually sub 100ms).
 	- Purpose of this is to trigger different devices on startup. The OS doesn't use a whole lot on startup. How much could be deferred to later and handled in post-boot?
 	- [Information 1](https://github.com/systemd/systemd/issues/17264) and [Information 2](https://github.com/profusion/demystifying-systemd-for-embedded-systems/blob/b1c10727729d888c6429b90e181c2f26d55e9354/systemd-minimal-strip.sh#L143)
 - Documentation: Organize buildroot environment better. Match closer to the "approved" file structure for configuration files, etc.
-- Feature request: Someday goal of supporting tunerstudio dash (TS Dash)
+- Feature request: Supporting tunerstudio dash (TS Dash)
 	- Right now, PyDash is basically locked into just using the same-named app.
 	- Realistically though, the OS is just a linux kernel and so running TS dash shouldn't be an issue. Many raspberry pis already use this program already anyway.
 	- Opening up to TS Dash would "unburden" the need for the PyDash builder, and app. Also it would open the dash to a much wider audience and probably would be good for it.

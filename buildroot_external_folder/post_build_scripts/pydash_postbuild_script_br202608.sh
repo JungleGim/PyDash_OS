@@ -8,25 +8,33 @@ sys_config_filepath="$target_fs"'/etc/systemd/system.conf'	#system config
 usr_config_filepath="$target_fs"'/etc/systemd/user.conf'	#user config
 
 #####update xinitrc
-pattern1='xclock -geometry'
+#remove xclock references
+pattern1='xclock'
 sed -i '\|^#|b;\|'"$pattern1"'|d' "$xinitrc_filepath"
 
-old_exec='exec xterm -geometry 80x66+0+0 -name login'
-#new_exec='exec python /PyDash/PyDash.pyc -geometry +0+0'		#compiled python prog
-new_exec='exec python /PyDash/PyDash.py -geometry +0+0'		     	#non-compiled python prog
+#add variable for execute
+vars_end='xmodmap'
+py_exec='pydash="$xterm -geometry 128x30+0+0 -name PyDash_xterm"'	#debug
+#py_exec='pydash="python /PyDash/PyDash.py -geometry +0+0"'		#non-compiled program
+#py_exec='pydash="python /PyDash/PyDash.pyc -geometry +0+0"'		#compiled program
+sed -i "\|^${vars_end}|a\\${py_exec}" "$xinitrc_filepath"
+
+#update the main execute statement
+old_exec='exec "$xterm" -geometry 80x66+0+0 -name login'
+new_exec='exec "$pydash"'						#pydash launch
 sed -i '\|^#|b;s|'"$old_exec"'|'"$new_exec"'|' "$xinitrc_filepath"
 
-pattern3='xterm -geometry'
+#clean up additional xterm calls not needed
+pattern3='"$xterm" -geometry'
 sed -i '\|^#|b;\|^exec|b;\|'"$pattern3"'|d' "$xinitrc_filepath"
 
 #add in provisions to prevent screensaver/blanking
-search_txt1='exec python'
+search_txt1='"$twm"'
 new_txt1='xset s off -dpms'
-if grep -q "$new_txt1" "$xinitrc_filepath"; then
-	true
-else
-	sed -i '\|^#|b;\|'"$search_txt1"'|i \
-'"$new_txt1" "$xinitrc_filepath"
+if grep -q "$new_txt1" "$xinitrc_filepath"; then			#if the xset already exists
+	true									#then no need to add
+else									#otherwise
+	sed -i "\|^${search_txt1}|a\\${new_txt1}" "$xinitrc_filepath"		#add it to the file
 fi
 
 #####update xorg_profile
