@@ -43,7 +43,7 @@ Additional details on the design considerations, required packages, and key feat
 ## Build Environment
 PyDash_OS is developed using the "buildroot" environment. The information included in the Readme highlights some of the required packages and configuration options needed to compile the output image.
 
-Current version used to compile is Buildroot-2026.08
+Current version used to compile is Buildroot-2025.11. Note that changing to a newer version of buildroot may require changes to the required files, processing, or linked libraries.
 
 ## Physical Hardware
 While the PyDash_OS is configurable for any hardware (depending on the buildroot options) there are some key pieces that either require additional changes or would require a re-design of the supporting PCB and/or application. The current hardware configuration consists of:
@@ -102,7 +102,6 @@ Many options are required to be configured to set up the PyDash_OS. The complete
 	- Usually choosing 512M as a start is appropriate
 - Packages
 	- Hardware handling
-		- pigpio
 		- firmware
 			- brcmfmac-sdio-firmware-rpi
 				- needed for SDIO
@@ -149,7 +148,7 @@ Any applied user patches are specific to options required to modify or update th
 There ARE however some patches applied to phython3 in order for it to work sufficiently with Tkinter. These have been submitted to the buildroot hive mind for approval but may change in future python revisions. Please review the files under the `packages_python3_chagnes` directory for the associated updates required to the python package for inclusion of tkiner.
 
 ### Post Build Scripts
-Post-build scripts are scripts used to modify the target filesystem after its generation. See the `pydash_postbuild_script.sh` file for the full list. REMINDER: this must be configured in buildroot as well.
+Post-build scripts are scripts used to modify the target filesystem after its generation. See the `pydash_postbuild_script.sh` file for the full list. REMINDER: this is configured in the GitHub repo buildroot config file but if starting from scratch, this must be configured in buildroot as well.
 
 A summary of the modifications in the post build script are listed below:
 - Update config.txt for SPI and CANbus related changes
@@ -158,6 +157,11 @@ A summary of the modifications in the post build script are listed below:
 - Update root OS files related to Xorg (graphical display) performance
 - Update root OS files related to Xorg to launch PyDash app on startup
 - Update system.conf to shorten stop/timeout limits
+
+### Post Image Scripts
+The post-image scripts are used for genimage to create the read-write userspace after all filesystem images are generated. See the "post_image_scripts" folder for the updated script. REMINDER: this is configured in the GitHub repo buildroot config file but if starting from scratch, this must be configured in buildroot as well.
+
+Additionally, the PyDash application references the userspace location for the dash application configuration. This is handled in the genimage configuration. The "Userspace default files " folder contains the default configuration for the current PyDash Application to use.
 
 ## Root FS Overlays
 Using the root FS overlay allows buildroot to place files into the root filesystem it generates as an image during compilation.

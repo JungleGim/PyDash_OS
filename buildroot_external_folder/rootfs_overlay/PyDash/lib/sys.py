@@ -25,9 +25,11 @@ sys_start_time_ms = round(time.time()*1000)            #set start ms for error h
 
 #---library handling for debug mode vs production mode
 import RPi.GPIO as GPIO    #needed for the GPI buttons on the CM4
+#GPIO = None
 
 #----constant file paths and other common directories
-sys_root_dir = '/mnt/uSD/'                              #root dir used in final production
+sys_root_dir = '/PyDash_User/' #root dir for 2.0a app on 1.0c hardware without uSD
+#sys_root_dir = str(pathlib.Path(__file__).parents[2]) + '/development/dev_root_dir/'       #temp root dir used in development
 sys_config_dir = sys_root_dir + 'PyDash_Config/'       #directory of configuration
 sys_config_archive = sys_root_dir + 'PyDash_Config.zip' #path for new config archive
 sys_cfg_Images_dir = sys_config_dir + 'images/'       #path for any images used in config
